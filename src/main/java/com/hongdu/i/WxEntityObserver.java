@@ -1,5 +1,6 @@
 package com.hongdu.i;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,19 +14,29 @@ public class WxEntityObserver implements Observerable {
 	//观察者需要的信息
 	private String message;
 	
-	@Override
-	public void delete() {
-
+	public WxEntityObserver() {
+		list = new ArrayList<>();
 	}
-
-	@Override
-	public void add() {
-
-	}
+	 
 
 	@Override
 	public void notifyAllObserver() {
-
+		 for(int i = 0; i < list.size(); i++) {
+	            Observer oserver = list.get(i);
+	            oserver.update(message);
+	        }
 	}
+
+	@Override
+	public void delete(Observer o) {
+		if(!list.isEmpty())
+			list.remove(o);
+	}
+
+	@Override
+	public void add(Observer o) {
+		list.add(o);
+	}
+	
 
 }
