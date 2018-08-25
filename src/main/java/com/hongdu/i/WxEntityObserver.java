@@ -23,14 +23,22 @@ public class WxEntityObserver implements Observerable {
 	public void notifyAllObserver() {
 		 for(int i = 0; i < list.size(); i++) {
 	            Observer oserver = list.get(i);
-	            oserver.update(message);
-	        }
+//	            if(oserver instanceof WeUser) {
+//	            	if(((WeUser)oserver).getLast())
+//	            }
+	        
+	            	oserver.update(message);
+		 }
 	}
 
 	@Override
 	public void delete(Observer o) {
-		if(!list.isEmpty())
+		if(!list.isEmpty()) {
 			list.remove(o);
+		}
+//		if(o instanceof WeUser) {
+//			((WeUser) o).setLast(true);
+//		}
 	}
 
 	@Override
