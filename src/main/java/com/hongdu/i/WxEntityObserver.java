@@ -38,5 +38,12 @@ public class WxEntityObserver implements Observerable {
 		list.add(o);
 	}
 	
+	//推送信息
+	public void setInfomation(String str) {
+		this.message = str;
+		System.out.println("微信服务更新消息:" + str);
+		//通知所有的订阅者修改消息
+		notifyAllObserver();
+	}
 
 }
