@@ -1,4 +1,4 @@
-package com.hongdu.event.not;
+package com.hongdu.src.GOF23.observer.event.not;
 
 import java.io.Serializable;
 

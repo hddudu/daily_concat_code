@@ -1,4 +1,4 @@
-package com.hongdu.event;
+package com.hongdu.src.GOF23.observer.event;
 
 public class Test {
 
