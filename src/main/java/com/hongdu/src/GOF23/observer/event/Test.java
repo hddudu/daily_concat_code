@@ -11,9 +11,7 @@ public class Test {
 		mes.addStateChangeToOneListener(new StateChangeToOneListener());
 
 		mes.changeFlag();
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		mes.changeFlag();
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		mes.changeFlag();
+//		mes.changeFlag();
 	}
 }
