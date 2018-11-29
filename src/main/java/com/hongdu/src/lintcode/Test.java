@@ -8,8 +8,8 @@ public class Test {
 //        int n = new Test().findUgly(1);
 //        int n = new Test().nthSuperUglyNumber3(394,new int[]{31,151,97,67,353,271,101,37});
 //        int n = new Test().nthSuperUglyNumber3(6,new int[]{2,7,13,19});
-        int n = new Test().kthLargestElement(5,new int[]{2,7,13,19});
-        System.out.println(n);
+//        int n = new Test().kthLargestElement(5,new int[]{2,7,13,19});
+//        System.out.println(n);
 //        System.out.println(args);
 //        System.out.println(args.length);
 //        System.out.println(args);
@@ -23,18 +23,337 @@ public class Test {
 //            System.out.println(i);
 //        }
     }
+    public static int kmp(String str, String dest,int[] next){//str文本串  dest 模式串
+        for(int i = 0, j = 0; i < str.length(); i++){
+            while(j > 0 && str.charAt(i) != dest.charAt(j)){
+                j = next[j - 1];
+            }
+            if(str.charAt(i) == dest.charAt(j)){
+                j++;
+            }
+            if(j == dest.length()){
+                return i-j+1;
+            }
+        }
+        return 0;
+    }
+    public static int[] kmpnext(String dest){
+        int[] next = new int[dest.length()];
+        next[0] = 0;
+        for(int i = 1,j = 0; i < dest.length(); i++){
+            while(j > 0 && dest.charAt(j) != dest.charAt(i)){
+                j = next[j - 1];
+            }
+            if(dest.charAt(i) == dest.charAt(j)){
+                j++;
+            }
+            next[i] = j;
+        }
+        return next;
+    }
+    /**
+     * ReetrantLock
+     * ArrrayBlockingQueue
+     * LinkedBlockingQueue
+     * 特性比较
+     * 1.阻塞队列的数据结构
+     * 2.可重入锁
+     * 3.更好的使用可重入锁来操作阻塞队列
+     *
+     * 可重入： 可以重复拿锁 （在拿到锁的情况下可以重复拿锁）
+     *
+     */
 
     /**
      * 合并两个排序的整数数组A和B变成一个新的数组。
      * 给出A=[1,2,3,4]，B=[2,4,5,6]，返回 [1,2,2,3,4,4,5,6]
+     * 方法一： 暴力比较法
+     *      找到一个数组中最大
      * @param A: sorted integer array A
      * @param B: sorted integer array B
      * @return: A new sorted integer array
+     *
+     * LinkedList 是一个继承于AbstractSequentialList的双向链表。它也可以被当作堆栈、队列或双端队列进行操作。
+     * LinkedList 实现 List 接口，能对它进行队列操作。
+     * LinkedList 实现 Deque 接口，即能将LinkedList当作双端队列使用。
+     * LinkedList 实现了Cloneable接口，即覆盖了函数clone()，能克隆。
+     * LinkedList 实现java.io.Serializable接口，这意味着LinkedList支持序列化，能通过序列化去传输。
+     * LinkedList 是非同步的。
+     *
+     *LinkedList的本质是双向链表。
+     * (01) LinkedList继承于AbstractSequentialList，并且实现了Dequeue接口。
+     * (02) LinkedList包含两个重要的成员：header 和 size。
+     * 　　header是双向链表的表头，它是双向链表节点所对应的类Entry的实例。Entry中包含成员变量： previous, next, element。其中，previous是该节点的上一个节点，next是该节点的下一个节点，element是该节点所包含的值。
+     * 　　size是双向链表中节点的个数。
+     *
+     * LinkedList实际上是通过双向链表去实现的。既然是双向链表，那么它的顺序访问会非常高效，而随机访问效率比较低。
+     *     既然LinkedList是通过双向链表的，但是它也实现了List接口{也就是说，它实现了get(int location)、remove(int location)等“根据索引值来获取、删除节点的函数”}。LinkedList是如何实现List的这些接口的，如何将“双向链表和索引值联系起来的”？
+     *     实际原理非常简单，它就是通过一个计数索引值来实现的。例如，当我们调用get(int location)时，首先会比较“location”和“双向链表长度的1/2”；若前者大，则从链表头开始往后查找，直到location位置；否则，从链表末尾开始先前查找，直到location位置。
+     *    这就是“双线链表和索引值联系起来”的方法。
+     *
+     *    总结：
+     * (01) LinkedList 实际上是通过双向链表去实现的。
+     *         它包含一个非常重要的内部类：Entry。Entry是双向链表节点所对应的数据结构，它包括的属性有：当前节点所包含的值，上一个节点，下一个节点。
+     * (02) 从LinkedList的实现方式中可以发现，它不存在LinkedList容量不足的问题。
+     * (03) LinkedList的克隆函数，即是将全部元素克隆到一个新的LinkedList对象中。
+     * (04) LinkedList实现java.io.Serializable。当写入到输出流时，先写入“容量”，再依次写入“每一个节点保护的值”；当读出输入流时，先读取“容量”，再依次读取“每一个元素”。
+     * (05) 由于LinkedList实现了Deque，而Deque接口定义了在双端队列两端访问元素的方法。提供插入、移除和检查元素的方法。每种方法都存在两种形式：一种形式在操作失败时抛出异常，另一种形式返回一个特殊值（null 或 false，具体取决于操作）。
+     *
+     * 总结起来如下表格：
+     *
+     *         第一个元素（头部）                 最后一个元素（尾部）
+     *         抛出异常        特殊值            抛出异常           特殊值
+     * 插入    addFirst(e)    offerFirst(e)    addLast(e)        offerLast(e)
+     * 移除    removeFirst()  pollFirst()      removeLast()      pollLast()
+     * 检查    getFirst()     peekFirst()      getLast()         peekLast()
+     *
+     * (06) LinkedList可以作为FIFO(先进先出)的队列，作为FIFO的队列时，下表的方法等价：
+     *
+     * 队列方法       等效方法
+     * add(e)        addLast(e)
+     * offer(e)      offerLast(e)
+     * remove()      removeFirst()
+     * poll()        pollFirst()
+     * element()     getFirst()
+     * peek()        peekFirst()
+     *
+     * (07) LinkedList可以作为LIFO(后进先出)的栈，作为LIFO的栈时，下表的方法等价：
+     *
+     * 栈方法        等效方法
+     * push(e)      addFirst(e)
+     * pop()        removeFirst()
+     * peek()       peekFirst()
+     *
+     * 无论如何，千万不要通过随机访问去遍历LinkedList！
+     *
+     *
      */
     public int[] mergeSortedArray(int[] A, int[] B) {
         // write your code here
+        //LinkedList<Integer> arrAsLinked = new LinkedList<>();
+        int i=0,j=0,k=0;
+        int al = A.length;
+        int bl = B.length;
+        int[] c = new int[al + bl];
+        //优化成
+//        for(;i < al; i++) {
+            //单层嵌套循环==》似乎走不通 ==> 换成同时循环两个数组的情况
+//        }
+        while(i < al && j < bl) {
+            //两个数组都有值
+            if(A[i] < B[j]) {
+                c[k++] = A[i++];
+            } else if(A[i] == B[j]) {
+                c[k++] = A[i++];//同时移位
+                c[k++] = B[j++];//同时移位
+            } else {
+                c[k++] = B[j++];
+            }
+        }
+        //循环比较完毕后： 可能有一边的数组还有剩余的长度  例如： i == al的时候 j = 2呢?
+        //拼接剩下的值素组值
+        if(i == al) {
+            //拼接B数组
+            for(;j < bl; j++) {
+                c[k++] = B[j];
+            }
+        }
+        if(j == bl) {
+            //拼接A数组
+            for(;i < al; i++) {
+                c[k++] = A[i];
+            }
+        }
+        return c;
+    }
 
-        return A;
+
+    @org.junit.Test
+    public void test() {
+        int[] c = mergeSortedArray(new int[]{1,2,3,4},new int[]{2,4,5,6});
+        for (int i : c) {
+            System.out.println(i);
+        }
+    }
+
+    /**
+     * 给定一个字符串和一个偏移量，根据偏移量旋转字符串(从左向右旋转)
+     *
+     * 样例
+     * 对于字符串 "abcdefg".
+     *
+     * offset=0 => "abcdefg"
+     * offset=1 => "gabcdef"
+     * offset=2 => "fgabcde"
+     * offset=3 => "efgabcd"
+     * 挑战
+     * 在数组上原地旋转，使用O(1)的额外空间
+     * @param str: An array of char
+     * @param offset: An integer
+     * @return: nothing
+     */
+    public void rotateString(char[] str, int offset) {
+        // write your code here
+        /**
+         * 截取最后的几个字符串 :  the array to be copied ： 被复制的数组的长度 + the length of the copy to be returned 返回的复制的字符数组的长度
+         *      public static char[] copyOf(char[] original, int newLength) {
+         *         char[] copy = new char[newLength];
+         *         System.arraycopy(original, 0, copy, 0,
+         *                          Math.min(original.length, newLength));
+         *         return copy;
+         *
+         *          @param   source       the characters being searched.
+         *      * @param   sourceOffset offset of the source string.
+         *      * @param   sourceCount  count of the source string.
+         *      * @param   target       the characters being searched for.
+         *      * @param   targetOffset offset of the target string.
+         *      * @param   targetCount  count of the target string.
+         *      * @param   fromIndex    the index to begin searching from.
+         *
+         *      static int indexOf ( char[] source, int sourceOffset, int sourceCount,
+         *          char[] target, int targetOffset, int targetCount,
+         *          int fromIndex)
+         */
+        String s = String.valueOf(str);
+        if(offset == 0 || offset < 0) {
+            //不用旋转
+            /**
+             * public char[] toCharArray() {
+             *         // Cannot use Arrays.copyOf because of class initialization order issues
+             *         char result[] = new char[value.length];
+             *         System.arraycopy(value, 0, result, 0, value.length);  全局value 字符数组 + 返回的数组的复制起始位置 + 返回的数组的字符数组
+             *                                          + 复制字符数组的起始位置 + 复制字符数组的数组长度
+             *         return result;
+             *     }
+             */
+            str = s.toCharArray();
+
+        }
+        if(offset > str.length) {
+            throw new IllegalArgumentException("非法的偏移量参数");
+        }
+        if(offset == str.length) {
+            /**
+             * public AbstractStringBuilder reverse() {
+             *         boolean hasSurrogate = false;
+             *         int n = count - 1;
+             *         for (int j = (n-1) >> 1; j >= 0; --j) {
+             *             char temp = value[j];
+             *             char temp2 = value[n - j];
+             *             if (!hasSurrogate) {
+             *                 hasSurrogate = (temp >= Character.MIN_SURROGATE && temp <= Character.MAX_SURROGATE)
+             *                     || (temp2 >= Character.MIN_SURROGATE && temp2 <= Character.MAX_SURROGATE);
+             *             }
+             *             value[j] = temp2;
+             *             value[n - j] = temp;
+             *         }
+             *         if (hasSurrogate) {
+             *             // Reverse back all valid surrogate pairs
+             *             for (int i = 0; i < count - 1; i++) {
+             *                 char c2 = value[i];
+             *                 if (Character.isLowSurrogate(c2)) {
+             *                     char c1 = value[i + 1];
+             *                     if (Character.isHighSurrogate(c1)) {
+             *                         value[i++] = c1;
+             *                         value[i] = c2;
+             *                     }
+             *                 }
+             *             }
+             *         }
+             *         return this;
+             *     }
+             */
+            System.out.println(new StringBuilder(s).reverse().toString());
+        }
+        /**
+         * 开始旋转： 截取为两段分开的字符串 ： 局部逆序方法===========》 abcd==》 dcba  =====字符串交换位置 不是翻转吧？==》就是翻转
+         */
+        /**
+         * original the array from which a range is to be copied=====》
+         * from the initial index of the range to be copied, inclusive======》
+         *  to the final index of the range to be copied, exclusive.========》
+         *
+         * public static char[] copyOfRange(char[] original, int from, int to) {
+         *         int newLength = to - from;
+         *         if (newLength < 0)
+         *             throw new IllegalArgumentException(from + " > " + to);
+         *         char[] copy = new char[newLength];
+         *         System.arraycopy(original, from, copy, 0,
+         *                          Math.min(original.length - from, newLength));
+         *         return copy;
+         *     }
+         */
+        String s1 = s.substring(0,str.length - offset);//不包含后面的位置
+        String s2 = s.substring(str.length - offset);
+//        System.out.println(s1 + " : " + s2);//abcde==> dcba : e ==> dcbae: eabcd
+        String s3 = new StringBuilder(partReverse(s1) + partReverse(s2)).reverse().toString();
+        System.out.println(s + " 旋转后的字符串: " + s3);
+    }
+
+    /**
+     * 特殊情况：①字符串为""的情况②offset=0的情况③offset远大于字符串长度的情况
+     * 前两种情况，如果想到了直接return就好。第三种情况难以想到，想到的话也好处理，因为如果偏移量offset为字符串长度的整数倍，
+     * 那么偏移之后的结果其实就是源字符串，所以真正的偏移量应该为offset%（字符串的长度）。
+     * @param str
+     * @param offset
+     */
+    public void rotateString2(char[] str, int offset) {
+        // write your code here
+        char temp;
+        if(offset == 0)
+            return;
+        if(str.length==0)
+            return;
+        int len = str.length;
+        //abcde 1==> temp = str[4] = 'e';
+        //j = 3;
+        //只要3>=0
+        //3--
+        //交换的规律: abcde : e abcd 最后的是交换到前面 前面的是平移到后面: ==>转成平移 + 交换的操作
+        for(int i = 1;i <= offset % len; i++){
+            temp = str[len-1];//5-1=4
+            int j = len-2;//从 被交换的位置的前一个位置开始平移
+            while( j>= 0){
+                str[j + 1] = str[j];
+                j--;
+            }
+            str[0] = temp;//eabcd ==>再进行一次循环==> deabc ==>还是平移 + 交换最后一个位置 ==》就是循环交换最后一个位置到最前面 然后平移 offset 的前面的所有的字符
+        }
+    }
+    public void rotateString3(char[] str, int offset) {
+        if(str.length == 0)
+            return;
+        if(offset == 0)
+            return;
+        int len = str.length;
+        char temp;
+        //从第1个索引位置开始 ： 第0个索引被最后一个字符替代了
+        for(int j = 1;j <= offset % len;j++) {
+            temp = str[len - 1];//最后一个字符
+            int k = len - 2;//最后一个字符的前面的字符串长度
+            while (k >= 0) {//第0个位置的字符就是首位置也需要后移一位
+                str[k + 1] = str[k];//后移位操作: 把1放到2位置的意思
+                k--;
+            }
+            //每移动完一次 ： 都将temp值交换到首位置
+            str[0] = temp;
+        }
+    }
+
+    /**
+     * 局部逆转字符串
+     * @param s
+     * @return
+     */
+    private String partReverse(String s) {
+        return new StringBuilder(s).reverse().toString();
+    }
+
+    @org.junit.Test
+    public void test02() {
+        char[] s = new char[]{'a','b','c','d','e'};
+        new Test().rotateString(s,1);//abcd : e
+        new Test().rotateString(s,2);//abcd : e
     }
 
     /**
