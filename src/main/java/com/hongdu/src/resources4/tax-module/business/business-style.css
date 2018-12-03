@@ -1,0 +1,18 @@
+.tax-business-box{ padding: 20px; overflow: hidden;}
+.tax-business-box ul{ margin: 10px; float: left;}
+.tax-business-box .add-btn{display: inline-block; cursor: pointer;color: #999;padding-top: 10px; width: 110px; height: 90px;}
+.tax-business-box .add-btn i{ background-image: url(../../tax-module/business/icon_gray.png);width: 52px; height: 52px;display: block; line-height: 52px; text-align: center; margin: auto;}
+.tax-business-box .add-btn .iconfont{ font-size: 32px; }
+.tax-business-box .add-btn p{ line-height: 32px;text-align: center;}
+.tax-business-box .add-btn:hover{ color: #0994dc;}
+.tax-business-box .add-btn:hover i{ background-image: url(../../tax-module/business/icon_bg.png);}
+.tax-business-box .item-ul{ cursor: pointer;color: #999; position:relative;padding-top: 10px; height: 90px;}
+.tax-business-box .item-ul i{ background-image: url(../../tax-module/business/icon_blue.png);width: 52px; height: 52px;display: block; line-height: 52px; text-align: center; margin: auto;}
+.tax-business-box .item-ul .iconfont{ font-size: 32px; color: #fff; }
+.tax-business-box .item-ul a{ text-align: center; line-height: 18px; padding: 5px 0;display: block; width:110px;}
+.tax-business-box .item-ul:hover{ }
+.tax-business-box .item-ul:hover i{ }
+.tax-business-box .description{display: none;}
+.tax-business-box .item-ul .item-but {top:0px; text-align: center; position: absolute;right:0px;  }
+.tax-business-box .item-ul .item-but .iconfont{ color: #fff; background-color: #53acf3; font-size: 12px;border-radius: 2px; margin: 0 2px; padding: 2px; opacity: 0.5;display: inline-block; width: 12px; height: 12px;font-size: 12px; line-height: 12px; background-image: url(_notes/)}
+.tax-business-box .item-ul .item-but .iconfont:hover{ opacity:1;}

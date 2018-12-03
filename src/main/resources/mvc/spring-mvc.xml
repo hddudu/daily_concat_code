@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- transaction begin
+    配置基于注解式事务管理，可以在@controller,@service等spring-mvc注解中使用,使用方式为@Transactional("beanID"),其他参数比如隔离界别等默认即可,
+    不同数据库间的操作无法使用事务,spring没有那么强大,这段配置不要放到其他spring配置文件中,由于存在spring与spring-mvc字节的父子容器关系事务管理驱动无法扫描到spring-mvc的注解类,
+    事务无法执行,多数据库下边加bean即可。-by lgw
+    -->
+    <tx:annotation-driven/>
+    <bean name="yhzxTM" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="yhzx"></property>
+    </bean>
+    <bean name="lhywzxTM" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="lhywzx"></property>
+    </bean>
+    <!-- transaction end -->
+	<!-- 上传文件用 -->  
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+	    <property name="maxUploadSize" value="1048576" />  
+	</bean>
+
+    <context:component-scan base-package="com.foresee"/>
+    <mvc:default-servlet-handler/>
+    <mvc:annotation-driven/>
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+</beans>

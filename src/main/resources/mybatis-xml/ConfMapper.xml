@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foresee.vsconfig.mapper.lhywzx.ConfMapper">
+	<select id="getConf" resultType="com.foresee.vsconfig.pojo.ConfDefault" statementType="STATEMENT">
+		select t.module,t.key,t.value,t.desc,kz.valueType,kz.constraint,kz.sfkgg,kz.sfkpz,kz.sfbt,kz.sfqhc from ${dto.tableName} t,conf_default_kz kz where t.module=kz.module and t.key=kz.key
+		<if test="dto.module != null and dto.module != '' ">
+				and t.module = '${dto.module}'
+		</if>
+		<if test="dto.key != null and dto.key != '' ">
+				and (t.key like '%${dto.key}%'
+				or t.value like '%${dto.key}%'
+				or t.desc like '%${dto.key}%')
+		</if>
+	</select>
+	
+	<select id="getConfByModuleAndKey" resultType="java.lang.Integer" statementType="STATEMENT">
+		select count(1) from ${dto.tableName} t where 1=1
+		<if test="dto.module != null and dto.module != '' ">
+				and t.module = '${dto.module}'
+		</if>
+		<if test="dto.key != null and dto.key != '' ">
+				and t.key  = '${dto.key}'
+		</if>
+	</select>
+
+	<select id="getConfKzByModuleAndKey" resultType="java.lang.Integer" statementType="STATEMENT">
+		select count(1) from conf_default_kz t where 1=1
+		<if test="dto.module != null and dto.module != '' ">
+				and t.module = '${dto.module}'
+		</if>
+		<if test="dto.key != null and dto.key != '' ">
+				and t.key  = '${dto.key}'
+		</if>
+	</select>
+
+
+	<select id="getColumnNames" resultType="java.util.Map" statementType="STATEMENT">
+		SELECT column_name,column_comment FROM information_schema.columns WHERE table_name = '${tableName}'
+	</select>
+
+	<select id="getConfTablesInfo" resultType="java.util.Map" statementType="STATEMENT">
+		SELECT table_name,table_comment FROM information_schema.tables WHERE table_name LIKE 'conf%' AND table_name NOT LIKE '%_kz' AND table_schema= '${tableSchema}' ORDER BY table_name ASC
+	</select>
+
+	<update id="editConf" statementType="STATEMENT">
+		update ${dto.tableName} set `value` = '${dto.value}',`desc` = '${dto.desc}'
+		where `module`= '${dto.module}' and `key`= '${dto.key}'
+	</update>
+	
+	<update id="editConfKz" statementType="STATEMENT">
+		update conf_default_kz set `constraint` = '${dto.constraint}',`sfkgg` = '${dto.sfkgg}',`sfkpz` = '${dto.sfkpz}',`sfbt` = '${dto.sfbt}',`sfqhc` = '${dto.sfqhc}'
+		where `module`= '${dto.module}' and `key`= '${dto.key}'
+	</update>
+	
+	<update id="deleteConf" statementType="STATEMENT">
+		delete from ${dto.tableName} where `module`= '${dto.module}' and `key`= '${dto.key}'
+	</update>
+	
+	<update id="deleteConfKz" statementType="STATEMENT">
+		delete from conf_default_kz where `module`= '${dto.module}' and `key`= '${dto.key}'
+	</update>
+	
+	<update id="insertConf" statementType="STATEMENT">
+		insert into ${dto.tableName}(`module`,`key`,`value`,`desc`) values('${dto.module}','${dto.key}','${dto.value}','${dto.desc}')
+	</update>
+	<update id="insertConfKz" statementType="STATEMENT">
+		insert into conf_default_kz(`module`,`key`,`valueType`,`constraint`,`sfkpz`,`sfkgg`,`sfbt`,`sfqhc`) values('${dto.module}','${dto.key}','${dto.valueType}','${dto.constraint}','${dto.sfkpz}','${dto.sfkgg}','${dto.sfbt}','${dto.sfqhc}')
+	</update>
+</mapper>
