@@ -320,6 +320,49 @@ public class ListNodeSolutions {
         n4.next = n5;
         return n;
     }
+    public MySingleLinkNode generateMySingleLinkNode2() {
+        //3760->2881->7595->3904->5069->
+        // 4421->8560->8879->8488->5040->
+        // 5792->56->1007->2270->3403->6062->null
+        MySingleLinkNode n = new MySingleLinkNode(3760);
+        MySingleLinkNode n2 = new MySingleLinkNode(2881);
+        MySingleLinkNode n3 = new MySingleLinkNode(7595);
+        MySingleLinkNode n4 = new MySingleLinkNode(3904);
+        MySingleLinkNode n5 = new MySingleLinkNode(5069);
+        //执行链接
+        n.next = n2;
+        n2.next = n3;
+        n3.next = n4;
+        n4.next = n5;
+
+        MySingleLinkNode n6 = new MySingleLinkNode(4421);
+        MySingleLinkNode n7 = new MySingleLinkNode(8560);
+        MySingleLinkNode n8 = new MySingleLinkNode(8879);
+        MySingleLinkNode n9 = new MySingleLinkNode(8488);
+        MySingleLinkNode n10 = new MySingleLinkNode(5040);
+        //执行链接
+        n5.next = n6;
+        n6.next = n7;
+        n7.next = n8;
+        n8.next = n9;
+        n9.next = n10;
+
+        MySingleLinkNode n11 = new MySingleLinkNode(5792);
+        MySingleLinkNode n12 = new MySingleLinkNode(56);
+        MySingleLinkNode n13 = new MySingleLinkNode(1007);
+        MySingleLinkNode n14 = new MySingleLinkNode(2270);
+        MySingleLinkNode n15 = new MySingleLinkNode(3403);
+        MySingleLinkNode n16 = new MySingleLinkNode(6062);
+        MySingleLinkNode n17 = null;
+        n10.next = n11;
+        n11.next = n12;
+        n12.next = n13;
+        n13.next = n14;
+        n14.next = n15;
+        n15.next = n16;
+        n16.next = n17;
+        return n;
+    }
 
     @Test
     public void testReverseSingleList() {
@@ -334,6 +377,11 @@ public class ListNodeSolutions {
         MySingleLinkNode ntest = MySingleLinkNode.reversePartSingleList2(n,2,4);
         MySingleLinkNode.printMySingleLinkNode(ntest);//打印单链表
     }
+    @Test
+    public void testGenerate() {
+        MySingleLinkNode n = generateMySingleLinkNode2();
+        MySingleLinkNode.printMySingleLinkNode(n);//打印单链表
+    }
 
     /**
      * 给定一个单链表和数值x，划分链表使得所有小于x的节点排在大于等于x的节点之前。
@@ -346,6 +394,14 @@ public class ListNodeSolutions {
      * ①遍历： 找到比x小的结点就移除当前位置 并插入到最后一个比x小的元素后面
      * ②遍历： 找到比x大的结点就移除当前位置 并插入到第一个比x大的元素前面
      */
+    @Test
+    public void testReversePart() {
+        MySingleLinkNode n = generateMySingleLinkNode();
+        MySingleLinkNode.printMySingleLinkNode(n);
+        MySingleLinkNode node = MySingleLinkNode.reverseKGroup(n,3);
+        MySingleLinkNode.printMySingleLinkNode(node);
+    }
+
 
 
 }

@@ -2,6 +2,8 @@ package com.hongdu.src.datastructurejava.tree.base.api.nodep.singlenode;
 
 import org.junit.Test;
 
+import java.util.Stack;
+
 /**
  * lintcode 单链表
  */
@@ -57,6 +59,8 @@ public class MySingleLinkNode {
             head = head.next;
             if(head != null) {
                sb.append("->");
+            } else {
+                sb.append("->null");
             }
         }
         System.out.println(sb.toString());
@@ -104,6 +108,21 @@ public class MySingleLinkNode {
             pre = head;//保存翻转的链表
             head = next;// 因为此时的 head.next = pre = null 因为head.next已经保存在了next中
 //            head = next;//此处的next = head.next 所以如果写: head = head.next 是有问题
+        }
+        return pre;
+    }
+    public static MySingleLinkNode reverse(MySingleLinkNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+        MySingleLinkNode cur = head;
+        MySingleLinkNode pre = null;
+        while (cur != null) {
+            MySingleLinkNode nextNode = cur.next;
+            //fanz
+            cur.next = pre;
+            pre = cur;
+            cur = nextNode;
         }
         return pre;
     }
@@ -203,6 +222,136 @@ public class MySingleLinkNode {
         }
         return node1;
     }
+    /**
+     * 给你一个链表以及一个k,将这个链表从头指针开始每k个翻转一下。
+     * 链表元素个数不是k的倍数，最后剩余的不用翻转
+     * 还是局部翻转==>局部多个翻转==》 首先还是得求出翻转的前一个结点的位置 + 翻转结束结点指向的下一个结点
+     * ==》是否从最后的位置开始翻转呢？
+     * 思路：①一个是用来分段的，一个是用来翻转的
+     *      ②只要next走过k个节点，就可以调用翻转函数来进行局部翻转了，代码如下所示：
+     *      ③一般在处理链表问题时，我们大多时候都会在开头再加一个 dummy node
+     *      为了记录当前最新的头结点的位置而引入的dummy node，那么我们加入dummy node后的链表变为-1->1->2->3->4->5，
+     *      那么我们需要一些指针，pre和next分别指向要翻转的链表的前后的位置，然后翻转后pre的位置更新到如下新的位置：
+     *
+     *      方式三：
+     *      我们也可以使用递归来做，我们用head记录每段的开始位置，cur记录结束位置的下一个节点，然后我们调用reverse函数来将这段翻转，
+     *      然后得到一个new_head，原来的head就变成了末尾，这时候后面接上递归调用下一段得到的新节点，返回new_head
+     * 样例
+     * 给出链表 1->2->3->4->5
+     * k = 2, 返回 2->1->4->3->5
+     * k = 3, 返回 3->2->1->4->5
+     */
+    public static MySingleLinkNode reverseKGroup(MySingleLinkNode head, int k) {//1 到 k
+        // write your code here
+        //定义额外的 头
+        MySingleLinkNode theadNode = new MySingleLinkNode(-1);
+            theadNode.next = head;
+        MySingleLinkNode retNode = theadNode;//定义返回的结点指针
+        MySingleLinkNode cur = head;
+        MySingleLinkNode fpre = null;
+        MySingleLinkNode tnext = null;
+        MySingleLinkNode newHead = head;
+        int len = 0;
+        while (cur != null) {//先求最后的翻转位置
+            len++;
+            if(len == k) {
+                //打断 翻转 拼接
+                MySingleLinkNode tcurNode = cur;
+                cur = cur.next;//保存下一位
+                tcurNode.next = null;//1->2->3->4 3 那么就打断了 3->4 ==》1->2->3 此时 tcurNode 指向 3
+                //翻转
+                head = reverse(head);
+
+                //拼接
+                theadNode.next = head;
+
+                //
+                MySingleLinkNode tail = head;//tail 为 -1->3->2->1
+                while (tail.next != null) {
+                    tail = tail.next;
+                }
+                tail.next = cur;//3->2->1 ->4 此时的cur为4
+                //重新定义头结点
+                theadNode = tail;//将 theadNode 移动到 第二组(第三组、第四组) 的头结点上来====>其实就是本组的尾结点
+                head = cur;//
+                len = 0;
+                continue;
+            }
+            cur = cur.next;//移位
+        }
+        return retNode.next;
+    }
+    //使用辅助栈结构
+    //思路 : 打断 翻转 拼接
+    /**
+     *                   /打断
+     *                 ListNode *tcurNode = curNode;
+     *                 curNode =  curNode -> next;
+     *                 tcurNode -> next = NULL;
+     *                 //翻转
+     *                 head = reverse(head);
+     *
+     *                 //拼接
+     *                 theadNode -> next = head;
+     *                 ListNode *tail = head;
+     *                 while(tail->next)
+     *                     tail = tail->next;
+     *                 tail -> next = curNode;
+     *
+     *                 //重新定义头节点
+     *                 theadNode = tail;
+     *                 head = curNode;
+     *
+     *                 cnt = 0;
+     *                 continue;
+     *
+     *             }
+     * @param head
+     * @param k
+     * @return
+     */
+    public static MySingleLinkNode reverseKGroup2(MySingleLinkNode head, int k) {//1 到 k
+        // write your code here
+        Stack<MySingleLinkNode> stack = new Stack<>();
+        MySingleLinkNode cur = head;
+        MySingleLinkNode fpre = null;
+        MySingleLinkNode tnext = null;
+        MySingleLinkNode newHead = head;
+        int len = 0;
+        while (cur != null) {//先求最后的翻转位置
+            len++;
+            stack.push(cur);
+            if(stack.size() == k) {
+                /**
+                 * 开始翻转： 并连接下一个位置 （对头结点的特殊处理）
+                 */
+                fpre = resign1(stack, fpre, tnext);
+                if(newHead == head) {
+                    newHead = cur;
+                } else {
+                    newHead = newHead;
+                }
+            }
+            cur = cur.next;//移位
+        }
+        return newHead;
+    }
+
+    public static MySingleLinkNode resign1(Stack<MySingleLinkNode> stack, MySingleLinkNode left, MySingleLinkNode right) {
+        MySingleLinkNode cur = stack.pop();
+        if(left != null) {//说明前面有值
+            left.next = cur;
+        }
+        MySingleLinkNode next = null;
+        while (!stack.isEmpty()) {
+            next = stack.pop();
+            cur.next = next;
+            cur = next;
+        }
+        cur.next = right;//拼接右边
+        return cur;
+    }
+
 
 //    @Test
 //    public void testReverseSingleList222() {

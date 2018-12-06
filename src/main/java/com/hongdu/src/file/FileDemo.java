@@ -3,6 +3,7 @@ package com.hongdu.src.file;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * 成员变量:
@@ -44,8 +45,32 @@ import java.io.File;
 
 public class FileDemo {
     @Test
-    public void test() {
+    public void test() throws IOException {
+        int i = (int)(Math.random()*900 + 100);
+        String myStr = Integer.toString(i);
+        System.out.println(myStr);
         File file = new File("test.txt");
         System.out.println("--");
+        //创建文件夹 在该目录下
+        String path = file.getAbsolutePath();
+        System.out.println("--" + path);
+        File mulu = new File("mulu");
+        if(!mulu.exists())
+            mulu.mkdir();
+        System.out.println("mulu: " + mulu.getAbsolutePath());
+        String temp = mulu.getAbsolutePath() + "/" + "test.txt";
+        File file1 = new File(temp);
+        if(!file1.exists()) {
+            file1.createNewFile();
+        }
+        if(mulu.isDirectory()) {
+            mulu.delete();
+//            mulu.deleteOnExit();
+        }
     }
+    @Test
+    public void test2() throws IOException {
+
+    }
+
 }
