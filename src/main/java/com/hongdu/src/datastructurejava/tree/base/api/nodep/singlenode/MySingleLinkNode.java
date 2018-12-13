@@ -51,6 +51,7 @@ public class MySingleLinkNode {
      */
     public static void printMySingleLinkNode(MySingleLinkNode head) {
         if(head == null) {
+            System.out.println("null");
             System.out.println("链表为空!");
         }
         StringBuilder sb = new StringBuilder();
