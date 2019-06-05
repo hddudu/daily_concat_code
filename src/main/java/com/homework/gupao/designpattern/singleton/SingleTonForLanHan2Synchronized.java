@@ -1,26 +1,29 @@
 package com.homework.gupao.designpattern.singleton;
 
-public class SingleTonForEHan {
+public class SingleTonForLanHan2Synchronized {
 	
 	//加final的对象可以实例化吗? 不可以实例化
 //	private static final SingleTonForEHan singleTon = null;//
-	private static SingleTonForEHan singleTon = null;//
+	private static SingleTonForLanHan2Synchronized singleTon = null;//
 	
 	/**
 	 * 私有化构造器
 	 */
-	private SingleTonForEHan() {
+	private SingleTonForLanHan2Synchronized() {
 		
 	}
-	
-	public static SingleTonForEHan getInstance() {
+	/**
+	 * 方法前面添加同步关键字 ： synchronized 解决多线程下单例不唯一情况
+	 * @return
+	 */
+	public static synchronized SingleTonForLanHan2Synchronized getInstance() {
 		if(singleTon == null) {
 			//线程一抢到cpu进入到这一行，然后cpu被线程2抢走，线程2也进入到这一行
 			//那么线程一将 singleTon  实例化后，线程2也会再将 singleTon 实例化一次
 			//那么结果是 ： 线程一的实例化被线程二覆盖
 			//如果在覆盖前线程一的实例被引用了，那么后面的结果是实例对象莫名被修改了
 //			singleTon = new SingleTonForEHan();//final修饰无法实例化
-			singleTon = new SingleTonForEHan();//所以延迟初始化需要去掉final
+			singleTon = new SingleTonForLanHan2Synchronized();//所以延迟初始化需要去掉final
 		}
 		return singleTon;
 	}

@@ -1,31 +1,28 @@
 package com.homework.gupao.designpattern.singleton;
 
-/**
- * 单例模式 ：  ①私有构造器
- * 		 ②提供公共的访问实例方法
- * 		  🌂多线程访问 安全性问题 ： 可能出现不是唯一实例的情况
- * 		 ④序列化和反序列化出现不是唯一实例情况
- * 		 🌫反射绕过公共方法出现不适唯一实例情况
- * 	   懒汉式 ： 延迟初始化
- *   饿汉式 ：无论实例对象是否有用到,都先直接在堆空间中分配内存给到对象==》 容易造成浪费 
- * @author dudu
- *
- */
 public class SingleTonForLanHan {
 	
-	//这个地方加final ： 无法修改
-	//如果不加final 可能通过反射覆盖 或者 序列化
-	//直接实例化 ： 如果有很多个这样的单例，但是又很多没有用到，就会浪费很多空间
-	private static final SingleTonForLanHan singleTonLanHan = new SingleTonForLanHan();
-
+	//加final的对象可以实例化吗? 不可以实例化
+//	private static final SingleTonForEHan singleTon = null;//
+	private static SingleTonForLanHan singleTon = null;//
+	
 	/**
-	 * 私有构造器
+	 * 私有化构造器
 	 */
-	private SingleTonForLanHan () {
+	private SingleTonForLanHan() {
 		
 	}
 	
 	public static SingleTonForLanHan getInstance() {
-		return singleTonLanHan;
+		if(singleTon == null) {
+			//线程一抢到cpu进入到这一行，然后cpu被线程2抢走，线程2也进入到这一行
+			//那么线程一将 singleTon  实例化后，线程2也会再将 singleTon 实例化一次
+			//那么结果是 ： 线程一的实例化被线程二覆盖
+			//如果在覆盖前线程一的实例被引用了，那么后面的结果是实例对象莫名被修改了
+//			singleTon = new SingleTonForEHan();//final修饰无法实例化
+			singleTon = new SingleTonForLanHan();//所以延迟初始化需要去掉final
+		}
+		return singleTon;
 	}
+	//存在问题： 多线程下， 出现不是唯一实例的情况
 }

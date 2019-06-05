@@ -16,35 +16,50 @@ package com.homework.gupao.designpattern.singleton;
  * @author dudu
  *
  */
-public class SingleTonForEHan2Synchronized2 {
+public class SingleTonForLanHan2Synchronized2 {
 	
 	//加final的对象可以实例化吗? 不可以实例化
 //	private static final SingleTonForEHan singleTon = null;//
-	private static SingleTonForEHan2Synchronized2 singleTon = null;//
+	private static volatile SingleTonForLanHan2Synchronized2 singleTon = null;//
 	
 	/**
 	 * 私有化构造器
 	 */
-	private SingleTonForEHan2Synchronized2() {
+	private SingleTonForLanHan2Synchronized2() {
 		
 	}
 	/**
 	 * 方法前面添加同步关键字 ： synchronized 解决多线程下单例不唯一情况
-	 * 改进： 去掉方法前面的关键字
+	 *   改进： 去掉方法前面的关键字
 	 * 同步锁加到代码块面上去
-	 *  synchronized : ①添加到方法前面
-	 *  				Ⅱ添加到类前面
-	 *  				🌂添加到实例对象
+	 *  synchronized : ①添加到方法前面 ： 粒度大
+	 *  				Ⅱ添加到类前面 : 类锁 ： 粒度大
+	 *  				🌂添加到实例对象 ： 对象锁 ： 粒度小
 	 * @return
 	 */
-	public static SingleTonForEHan2Synchronized2 getInstance() {
-		if(singleTon == null) {
+	public static SingleTonForLanHan2Synchronized2 getInstance() {
+		if(singleTon == null) {//第一次检测
 			//线程一抢到cpu进入到这一行，然后cpu被线程2抢走，线程2也进入到这一行
 			//那么线程一将 singleTon  实例化后，线程2也会再将 singleTon 实例化一次
 			//那么结果是 ： 线程一的实例化被线程二覆盖
 			//如果在覆盖前线程一的实例被引用了，那么后面的结果是实例对象莫名被修改了
 //			singleTon = new SingleTonForEHan();//final修饰无法实例化
-			singleTon = new SingleTonForEHan2Synchronized2();//所以延迟初始化需要去掉final
+			synchronized(SingleTonForLanHan2Synchronized2.class) {//对象锁 : 即使是这样,但是也可可能出现不安全的问题
+				if(singleTon == null) {//第二次检测
+					//同步块内的操作尽量保证原子性 ：
+					//同步代码块内代码全部执行完： 
+					singleTon = new SingleTonForLanHan2Synchronized2();//所以延迟初始化需要去掉final
+					//非原子操作 ： 如果出现重排序：
+					//1： 给 instance 分配内存
+					//2：调用 Singleton 的构造函数来初始化成员变量
+					//3： 将instance对象指向分配的内存空间（执行完这步 instance 就为非 null 了）
+					//如果一个线程执行顺序是这样了： 132 ==》 
+					//最后理解是这样： 线程一 抢到了锁， 然后线程2开始等待
+					//线程一执行到了1，3==》 此时cpu时间片用完，需要再抢cpu，这个时候： 线程一是接着2继续执行，完成instance实例化的正确过程的；
+					//但是这个时候线程2抢到了cpu，直接判断instance指向了非null（内存空间已经分配，对象指向了内存空间，只是内存空间中还没有调用构造函数）
+					//解决： 对变量添加 volatile 关键字
+				}
+			}
 		}
 		return singleTon;
 	}
