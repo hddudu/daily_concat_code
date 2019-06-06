@@ -22,5 +22,8 @@ public class SingleTonInnerClassSafe {
 		//在返回结果以前，一定会先加载内部类
 		return SingleHolder.LAZY;
 	}
+	public static void main(String[] args) {
+		
+	}
 
 }
